@@ -1,0 +1,35 @@
+{
+  "name": "server",
+  "version": "1.0.0",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "dev": "npx tsx watch ./src/index.ts"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "description": "",
+  "devDependencies": {
+    "@edgedb/generate": "^0.5.6",
+    "@rocketseat/eslint-config": "^2.2.2",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^5.0.0",
+    "@types/node": "^22.10.1",
+    "eslint": "^8.57.1",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  },
+  "dependencies": {
+    "@genkit-ai/googleai": "^0.9.7",
+    "@types/cookie-parser": "^1.4.8",
+    "chalk": "^5.3.0",
+    "cookie-parser": "^1.4.7",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "edgedb": "^1.5.12",
+    "express": "^4.21.2",
+    "genkit": "^0.9.7",
+    "zod": "^3.24.0"
+  }
+}
