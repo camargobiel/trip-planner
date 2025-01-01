@@ -2,7 +2,7 @@ import express from 'express'
 
 import 'dotenv/config'
 import cors from 'cors'
-import { authRoutes, tripRoutes } from './routes'
+import { authRoutes, citiesRoutes, tripRoutes } from './routes'
 import chalk from 'chalk'
 import cookieParser from 'cookie-parser'
 
@@ -20,6 +20,7 @@ app.use(cookieParser())
 
 app.use('/trips', tripRoutes)
 app.use('/auth', authRoutes)
+app.use('/cities', citiesRoutes)
 
 const port = process.env.PORT || 6969
 

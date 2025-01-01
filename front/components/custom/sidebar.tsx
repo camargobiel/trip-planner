@@ -4,18 +4,19 @@ import { useRouter } from 'next/navigation'
 import { CirclePlusIcon } from 'lucide-react'
 import { Avatar, AvatarFallback, AvatarImage } from '../ui/avatar'
 import { Button } from '../ui/button'
-import { useEffect, useState } from 'react'
-import { UserEntity } from '@/types/user'
 import { Separator } from '../ui/separator'
 import { GoogleIcon } from './google-icon'
-import { toast } from '@/hooks/use-toast'
 import { Trip } from '@/types/trip'
 import { format } from 'date-fns'
+import { useUser } from '@/context/user-context'
+import { useApi } from '@/hooks/use-api'
 
 export function Sidebar() {
   const router = useRouter()
-  const [user, setUser] = useState<UserEntity | null>(null)
-  const [lastTrips, setLastTrips] = useState<Trip[]>([])
+  const user = useUser()
+  const { data: lastTrips } = useApi<Trip[]>('http://localhost:6969/trips', {
+    runWhenBuild: true,
+  })
 
   const handleNewItinerary = () => {
     router.push('/generate-trip')
@@ -25,61 +26,9 @@ export function Sidebar() {
     window.location.href = 'http://localhost:6969/auth/google'
   }
 
-  useEffect(() => {
-    async function fetchData() {
-      const response = await fetch(`http://localhost:6969/auth/me`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-      })
-      if (response.status !== 200) {
-        toast({
-          title: 'Erro',
-          description: 'Não foi possível carregar o usuário',
-          variant: 'destructive',
-        })
-        return
-      }
-      const data = await response.json()
-      console.log('data', data)
-      setUser(data)
-    }
-    if (!user) {
-      fetchData()
-    }
-  }, [user])
-
-  useEffect(() => {
-    async function fetchData() {
-      const response = await fetch(`http://localhost:6969/trips`, {
-        method: 'GET',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        credentials: 'include',
-      })
-      if (response.status !== 200) {
-        toast({
-          title: 'Erro',
-          description: 'Não foi possível carregar os itinerários',
-          variant: 'destructive',
-        })
-        return
-      }
-      const data = await response.json()
-      console.log('data', data)
-      setLastTrips(data)
-    }
-    if (!lastTrips.length && user) {
-      fetchData()
-    }
-  }, [lastTrips, user])
-
   return (
-    <div className="grid grid-cols-1 gap-6 md:grid-cols-[300px_1fr] bg-zinc-950 p-5 rounded-xl">
-      <div className="flex flex-col gap-6">
+    <div className="grid grid-cols-1 gap-6 md:grid-cols-[300px_1fr] bg-zinc-950 p-5 rounded-xl relative">
+      <div className="flex flex-col gap-6 relative">
         {user ? (
           <div className="flex items-center gap-3">
             <Avatar className="h-10 w-10">
@@ -115,21 +64,22 @@ export function Sidebar() {
             <h2 className="text-sm font-semibold text-gray-400">
               Últimos itinerários
             </h2>
-            <div className="space-y-4 overflow-y-auto">
-              {lastTrips.map((trip) => (
-                <Button
-                  key={trip.id}
-                  variant="outline"
-                  className="w-full justify-start p-3 px-5 h-fit"
-                >
-                  <div className="w-full flex flex-col justify-start gap-1 text-start">
-                    <span className="text-gray-200">{trip.city}</span>
-                    <span className="text-gray-500">
-                      {format(new Date(trip.created_at), 'dd/MM/yyyy HH:mm')}
-                    </span>
-                  </div>
-                </Button>
-              ))}
+            <div className="space-y-4 overflow-y-auto h-[80%] w-full">
+              {lastTrips &&
+                lastTrips.map((trip) => (
+                  <Button
+                    key={trip.id}
+                    variant="outline"
+                    className="w-full justify-start p-3 px-5 h-fit"
+                  >
+                    <div className="w-full flex flex-col justify-start gap-1 text-start">
+                      <span className="text-gray-200">{trip.city}</span>
+                      <span className="text-gray-500">
+                        {format(new Date(trip.created_at), 'dd/MM/yyyy HH:mm')}
+                      </span>
+                    </div>
+                  </Button>
+                ))}
             </div>
           </div>
         ) : (

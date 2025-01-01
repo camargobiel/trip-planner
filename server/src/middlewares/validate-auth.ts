@@ -15,6 +15,7 @@ export function validateAuth() {
       `https://www.googleapis.com/oauth2/v1/userinfo?alt=json&access_token=${token}`,
     )
     const profile = await userProfile.json()
+    console.log('profile', profile)
 
     if (!profile) {
       next()
